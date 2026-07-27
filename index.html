@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>minming - Finder</title>
+    <!-- 맥북 느낌 아이콘을 위한 FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; user-select: none; }
+        body { background: #dcdde1; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+
+        /* 맥북 창 전체 컨테이너 */
+        .window {
+            width: 100%;
+            max-width: 850px;
+            height: 520px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.15);
+        }
+
+        /* 1. 상단 타이틀 바 (신호등 버튼 + 툴바) */
+        .titlebar {
+            height: 52px;
+            background: linear-gradient(to bottom, #e8e8e8, #d6d6d6);
+            border-bottom: 1px solid #b8b8b8;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            position: relative;
+        }
+
+        /* 신호등 버튼 (빨/노/초) */
+        .buttons { display: flex; gap: 8px; position: absolute; left: 15px; }
+        .btn { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+        .close { background: #ff5f56; border: 1px solid #e0443e; }
+        .minimize { background: #ffbd2e; border: 1px solid #dea123; }
+        .maximize { background: #27c93f; border: 1px solid #1aab29; }
+
+        /* 창 제목 */
+        .window-title { margin: 0 auto; font-size: 13px; font-weight: 600; color: #4d4d4d; display: flex; align-items: center; gap: 6px; }
+
+        /* 툴바 아이콘 영역 */
+        .toolbar-icons { position: absolute; right: 15px; display: flex; gap: 15px; color: #666; font-size: 13px; }
+
+        /* 2. 본문 메인 영역 (사이드바 + 콘텐츠) */
+        .main-content { display: flex; flex: 1; height: calc(100% - 52px); }
+
+        /* 왼쪽 사이드바 */
+        .sidebar {
+            width: 180px;
+            background: #f0f0f0;
+            border-right: 1px solid #d1d1d1;
+            padding: 15px 10px;
+            font-size: 12px;
+            color: #555;
+        }
+        .sidebar-section { margin-bottom: 20px; }
+        .sidebar-title { font-size: 11px; font-weight: bold; color: #888; padding-left: 10px; margin-bottom: 8px; }
+        .sidebar-item {
+            padding: 6px 10px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            color: #333;
+            text-decoration: none;
+        }
+        .sidebar-item.active { background: #d0d0d0; font-weight: 600; }
+        .sidebar-item:hover { background: #e4e4e4; }
+        .sidebar-item i { color: #51a0d5; font-size: 13px; }
+
+        /* 오른쪽 파일 그리드 영역 */
+        .content-area {
+            flex: 1;
+            background: #ffffff;
+            padding: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            grid-auto-rows: max-content;
+            gap: 25px 20px;
+            overflow-y: auto;
+        }
+
+        /* 폴더 및 파일 아이콘 버튼 */
+        .file-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            padding: 8px;
+            border-radius: 6px;
+            transition: background 0.15s;
+        }
+        .file-item:hover { background: #e8f3fc; }
+        .file-item:active { background: #cce5ff; }
+
+        /* 파란색 맥북 폴더 아이콘 스타일 */
+        .folder-icon {
+            width: 64px;
+            height: 52px;
+            background: #51a0d5;
+            border-radius: 5px;
+            position: relative;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+        /* 맥북 폴더 탭 디테일 */
+        .folder-icon::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: 0;
+            width: 24px;
+            height: 8px;
+            background: #51a0d5;
+            border-top-left-radius: 3px;
+            border-top-right-radius: 3px;
+        }
+        .folder-icon i {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -40%);
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 22px;
+        }
+
+        .file-name { font-size: 12px; text-align: center; word-break: break-all; line-height: 1.3; }
+
+        /* 반응형: 스마트폰 화면 처리 */
+        @media (max-width: 600px) {
+            .sidebar { display: none; }
+            .window { height: 85vh; }
+            .content-area { grid-template-columns: repeat(3, 1fr); padding: 20px 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="window">
+    <!-- 상단 툴바 -->
+    <div class="titlebar">
+        <div class="buttons">
+            <span class="btn close"></span>
+            <span class="btn minimize"></span>
+            <span class="btn maximize"></span>
+        </div>
+        <div class="window-title">
+            <i class="fa-solid fa-house" style="color: #888;"></i> minming
+        </div>
+        <div class="toolbar-icons">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+    </div>
+
+    <!-- 메인 본문 -->
+    <div class="main-content">
+        <!-- 왼쪽 메뉴 (사이드바) -->
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Favorites</div>
+                <div class="sidebar-item active"><i class="fa-solid fa-clock"></i> Recents</div>
+                <div class="sidebar-item"><i class="fa-solid fa-desktop"></i> Desktop</div>
+                <div class="sidebar-item"><i class="fa-solid fa-file"></i> Documents</div>
+                <div class="sidebar-item"><i class="fa-solid fa-download"></i> Downloads</div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Media</div>
+                <div class="sidebar-item"><i class="fa-solid fa-film"></i> Movies</div>
+                <div class="sidebar-item"><i class="fa-solid fa-music"></i> Music</div>
+                <div class="sidebar-item"><i class="fa-solid fa-image"></i> Pictures</div>
+            </div>
+        </div>
+
+        <!-- 오른쪽 폴더 클릭 구역 -->
+        <div class="content-area">
+            
+            <!-- 📁 폴더 1: 누르면 log1.html (첫 대화 백업)로 이동 -->
+            <a href="log1.html" class="file-item">
+                <div class="folder-icon">
+                    <i class="fa-solid fa-comments"></i>
+                </div>
+                <span class="file-name">에피소드 1</span>
+            </a>
+
+            <!-- 📁 폴더 2: 누르면 log2.html 로 이동 -->
+            <a href="log2.html" class="file-item">
+                <div class="folder-icon">
+                    <i class="fa-solid fa-book-bookmark"></i>
+                </div>
+                <span class="file-name">에피소드 2</span>
+            </a>
+
+            <!-- 📁 폴더 3: 원하는 이름으로 수정 및 추가 가능 -->
+            <a href="log3.html" class="file-item">
+                <div class="folder-icon">
+                    <i class="fa-solid fa-heart"></i>
+                </div>
+                <span class="file-name">특별한 날</span>
+            </a>
+
+            <!-- 📁 폴더 추가 예시 -->
+            <a href="#" class="file-item">
+                <div class="folder-icon">
+                    <i class="fa-solid fa-folder"></i>
+                </div>
+                <span class="file-name">Pictures</span>
+            </a>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
