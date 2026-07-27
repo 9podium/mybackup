@@ -141,43 +141,66 @@
             .window { height: 85vh; }
             .content-area { grid-template-columns: repeat(3, 1fr); padding: 20px 10px; }
         }
-    /* 📱 맥OS 스타일 뮤직 팝업 (홈 화면 색상과 통일) */
+    /* 📱 맥OS 스타일 뮤직 팝업 (반반 레이아웃) */
         .music-modal {
             display: none;
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 320px;
+            width: 580px; /* 반반 레이아웃을 위해 폭을 넓혔습니다 */
+            max-width: 90vw;
             background: #ffffff;
             color: #333333;
-            border-radius: 12px;
+            border-radius: 14px;
             padding: 20px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
             z-index: 999;
             border: 1px solid rgba(0,0,0,0.15);
         }
 
-        .music-header { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600; margin-bottom: 15px; color: #555; }
-        .music-close-btn { cursor: pointer; color: #888; }
+        .music-header { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600; margin-bottom: 15px; color: #555; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+        .music-close-btn { cursor: pointer; color: #888; font-size: 16px; }
         .music-close-btn:hover { color: #333; }
 
-        .album-art { width: 160px; height: 160px; border-radius: 8px; margin: 0 auto 15px; overflow: hidden; border: 1px solid #e0e0e0; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+        /* 반반 구조 (왼쪽 재생기 / 오른쪽 플레이리스트) */
+        .music-body { display: flex; gap: 20px; }
+
+        /* [왼쪽] 재생기 영역 (50%) */
+        .player-left { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid #eee; padding-right: 20px; }
+        .album-art { width: 140px; height: 140px; border-radius: 8px; margin-bottom: 12px; overflow: hidden; border: 1px solid #e0e0e0; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
         .album-art img { width: 100%; height: 100%; object-fit: cover; }
+        .song-title { font-size: 15px; font-weight: bold; text-align: center; margin-bottom: 4px; color: #222; }
+        .song-artist { font-size: 12px; color: #777; text-align: center; margin-bottom: 10px; }
+        .lyrics { font-size: 11px; color: #666; text-align: center; line-height: 1.4; margin-bottom: 12px; font-style: italic; }
 
-        .song-title { font-size: 16px; font-weight: bold; text-align: center; margin-bottom: 4px; color: #222; }
-        .song-artist { font-size: 12px; color: #777; text-align: center; margin-bottom: 12px; }
-        .lyrics { font-size: 12px; color: #666; text-align: center; line-height: 1.4; margin-bottom: 15px; font-style: italic; }
-
-        .progress-container { width: 100%; background: #e5e5e5; height: 4px; border-radius: 2px; margin-bottom: 15px; cursor: pointer; }
+        .progress-container { width: 100%; background: #e5e5e5; height: 4px; border-radius: 2px; margin-bottom: 12px; cursor: pointer; }
         .progress-bar { width: 35%; background: #51a0d5; height: 100%; border-radius: 2px; }
 
-        .controls { display: flex; justify-content: space-between; align-items: center; padding: 0 10px; }
-        .control-btn { font-size: 16px; color: #777; cursor: pointer; }
+        .controls { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 10px; }
+        .control-btn { font-size: 15px; color: #777; cursor: pointer; }
         .control-btn:hover { color: #333; }
-        .play-btn { width: 44px; height: 44px; background: #51a0d5; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #fff; font-size: 18px; cursor: pointer; }
+        .play-btn { width: 38px; height: 38px; background: #51a0d5; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #fff; font-size: 16px; cursor: pointer; }
 
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.2); z-index: 998; }
+        /* [오른쪽] 플레이리스트 영역 (50%) */
+        .playlist-right { flex: 1; display: flex; flex-direction: column; max-height: 280px; overflow-y: auto; }
+        .playlist-title { font-size: 12px; font-weight: bold; color: #888; margin-bottom: 10px; }
+        .playlist-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border-radius: 6px; cursor: pointer; margin-bottom: 4px; transition: background 0.15s; }
+        .playlist-item:hover { background: #f0f4f8; }
+        .playlist-item.active { background: #e8f3fc; }
+        .playlist-item.active .track-name { color: #51a0d5; font-weight: bold; }
+        .track-info { display: flex; flex-direction: column; gap: 2px; }
+        .track-name { font-size: 13px; color: #333; }
+        .track-singer { font-size: 11px; color: #888; }
+        .track-time { font-size: 11px; color: #aaa; }
+
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.25); z-index: 998; }
+
+        /* 모바일용 라이트 반응형 */
+        @media (max-width: 600px) {
+            .music-body { flex-direction: column; }
+            .player-left { border-right: none; border-bottom: 1px solid #eee; padding-right: 0; padding-bottom: 15px; }
+        }
     </style>
 </head>
 <body>
@@ -257,35 +280,66 @@
 </div>
 <div id="overlay" class="overlay" onclick="closeMusic()"></div>
 
-    <div id="musicModal" class="music-modal">
-        <div class="music-header">
-            <i class="fa-solid fa-xmark music-close-btn" onclick="closeMusic()"></i>
-            <span>Now Playing</span>
-            <i class="fa-regular fa-heart"></i>
-        </div>
+    /* 📱 맥OS 스타일 뮤직 팝업 (반반 레이아웃) */
+        .music-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 580px; /* 반반 레이아웃을 위해 폭을 넓혔습니다 */
+            max-width: 90vw;
+            background: #ffffff;
+            color: #333333;
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            z-index: 999;
+            border: 1px solid rgba(0,0,0,0.15);
+        }
 
-        <div class="album-art">
-            <img id="albumImg" src="https://via.placeholder.com/200" alt="Album Cover">
-        </div>
+        .music-header { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600; margin-bottom: 15px; color: #555; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+        .music-close-btn { cursor: pointer; color: #888; font-size: 16px; }
+        .music-close-btn:hover { color: #333; }
 
-        <div class="song-title" id="songTitle">Starlit Reverie</div>
-        <div class="song-artist" id="songArtist">캐릭터 이름 x 상대 캐릭터</div>
-        <div class="lyrics" id="songLyrics">"밤바람 속에 나누었던 우리의 소중한 이야기..."</div>
+        /* 반반 구조 (왼쪽 재생기 / 오른쪽 플레이리스트) */
+        .music-body { display: flex; gap: 20px; }
 
-        <audio id="myAudio" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+        /* [왼쪽] 재생기 영역 (50%) */
+        .player-left { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid #eee; padding-right: 20px; }
+        .album-art { width: 140px; height: 140px; border-radius: 8px; margin-bottom: 12px; overflow: hidden; border: 1px solid #e0e0e0; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+        .album-art img { width: 100%; height: 100%; object-fit: cover; }
+        .song-title { font-size: 15px; font-weight: bold; text-align: center; margin-bottom: 4px; color: #222; }
+        .song-artist { font-size: 12px; color: #777; text-align: center; margin-bottom: 10px; }
+        .lyrics { font-size: 11px; color: #666; text-align: center; line-height: 1.4; margin-bottom: 12px; font-style: italic; }
 
-        <div class="progress-container">
-            <div class="progress-bar"></div>
-        </div>
+        .progress-container { width: 100%; background: #e5e5e5; height: 4px; border-radius: 2px; margin-bottom: 12px; cursor: pointer; }
+        .progress-bar { width: 35%; background: #51a0d5; height: 100%; border-radius: 2px; }
 
-        <div class="controls">
-            <i class="fa-solid fa-shuffle control-btn"></i>
-            <i class="fa-solid fa-backward-step control-btn"></i>
-            <div class="play-btn" onclick="togglePlay()"><i id="playIcon" class="fa-solid fa-play"></i></div>
-            <i class="fa-solid fa-forward-step control-btn"></i>
-            <i class="fa-solid fa-repeat control-btn"></i>
-        </div>
-    </div>
+        .controls { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 10px; }
+        .control-btn { font-size: 15px; color: #777; cursor: pointer; }
+        .control-btn:hover { color: #333; }
+        .play-btn { width: 38px; height: 38px; background: #51a0d5; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #fff; font-size: 16px; cursor: pointer; }
+
+        /* [오른쪽] 플레이리스트 영역 (50%) */
+        .playlist-right { flex: 1; display: flex; flex-direction: column; max-height: 280px; overflow-y: auto; }
+        .playlist-title { font-size: 12px; font-weight: bold; color: #888; margin-bottom: 10px; }
+        .playlist-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border-radius: 6px; cursor: pointer; margin-bottom: 4px; transition: background 0.15s; }
+        .playlist-item:hover { background: #f0f4f8; }
+        .playlist-item.active { background: #e8f3fc; }
+        .playlist-item.active .track-name { color: #51a0d5; font-weight: bold; }
+        .track-info { display: flex; flex-direction: column; gap: 2px; }
+        .track-name { font-size: 13px; color: #333; }
+        .track-singer { font-size: 11px; color: #888; }
+        .track-time { font-size: 11px; color: #aaa; }
+
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.25); z-index: 998; }
+
+        /* 모바일용 라이트 반응형 */
+        @media (max-width: 600px) {
+            .music-body { flex-direction: column; }
+            .player-left { border-right: none; border-bottom: 1px solid #eee; padding-right: 0; padding-bottom: 15px; }
+        }
 
     <!-- 2. 그리고 바로 아래에 이 스크립트 태그 통째로 넣기 -->
     <script>
