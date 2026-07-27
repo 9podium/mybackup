@@ -280,66 +280,68 @@
 </div>
 <div id="overlay" class="overlay" onclick="closeMusic()"></div>
 
-    /* 📱 맥OS 스타일 뮤직 팝업 (반반 레이아웃) */
-        .music-modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 580px; /* 반반 레이아웃을 위해 폭을 넓혔습니다 */
-            max-width: 90vw;
-            background: #ffffff;
-            color: #333333;
-            border-radius: 14px;
-            padding: 20px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-            z-index: 999;
-            border: 1px solid rgba(0,0,0,0.15);
-        }
+    <div id="musicModal" class="music-modal">
+    <div class="music-header">
+        <span>Now Playing</span>
+        <i class="fa-solid fa-xmark music-close-btn" onclick="closeMusic()"></i>
+    </div>
 
-        .music-header { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600; margin-bottom: 15px; color: #555; padding-bottom: 10px; border-bottom: 1px solid #eee; }
-        .music-close-btn { cursor: pointer; color: #888; font-size: 16px; }
-        .music-close-btn:hover { color: #333; }
+    <!-- 반반 레이아웃 본문 -->
+    <div class="music-body">
+        <!-- 👈 왼쪽: 플레이어 & 가사 -->
+        <div class="player-left">
+            <div class="album-art">
+                <img id="albumImg" src="https://via.placeholder.com/200" alt="Album Cover">
+            </div>
+            <div class="song-title" id="songTitle">Starlit Reverie</div>
+            <div class="song-artist" id="songArtist">운 x 은요</div>
+            <div class="lyrics" id="songLyrics">"밤바람 속에 나누었던 우리의 이야기..."</div>
 
-        /* 반반 구조 (왼쪽 재생기 / 오른쪽 플레이리스트) */
-        .music-body { display: flex; gap: 20px; }
+            <audio id="myAudio" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
 
-        /* [왼쪽] 재생기 영역 (50%) */
-        .player-left { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid #eee; padding-right: 20px; }
-        .album-art { width: 140px; height: 140px; border-radius: 8px; margin-bottom: 12px; overflow: hidden; border: 1px solid #e0e0e0; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
-        .album-art img { width: 100%; height: 100%; object-fit: cover; }
-        .song-title { font-size: 15px; font-weight: bold; text-align: center; margin-bottom: 4px; color: #222; }
-        .song-artist { font-size: 12px; color: #777; text-align: center; margin-bottom: 10px; }
-        .lyrics { font-size: 11px; color: #666; text-align: center; line-height: 1.4; margin-bottom: 12px; font-style: italic; }
+            <div class="progress-container">
+                <div class="progress-bar"></div>
+            </div>
 
-        .progress-container { width: 100%; background: #e5e5e5; height: 4px; border-radius: 2px; margin-bottom: 12px; cursor: pointer; }
-        .progress-bar { width: 35%; background: #51a0d5; height: 100%; border-radius: 2px; }
+            <div class="controls">
+                <i class="fa-solid fa-shuffle control-btn"></i>
+                <i class="fa-solid fa-backward-step control-btn"></i>
+                <div class="play-btn" onclick="togglePlay()"><i id="playIcon" class="fa-solid fa-play"></i></div>
+                <i class="fa-solid fa-forward-step control-btn"></i>
+                <i class="fa-solid fa-repeat control-btn"></i>
+            </div>
+        </div>
 
-        .controls { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 10px; }
-        .control-btn { font-size: 15px; color: #777; cursor: pointer; }
-        .control-btn:hover { color: #333; }
-        .play-btn { width: 38px; height: 38px; background: #51a0d5; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #fff; font-size: 16px; cursor: pointer; }
+        <!-- 👉 오른쪽: 플레이리스트 목록 -->
+        <div class="playlist-right">
+            <div class="playlist-title">PLAYLIST</div>
+            
+            <div class="playlist-item active">
+                <div class="track-info">
+                    <span class="track-name">Starlit Reverie</span>
+                    <span class="track-singer">운 x 은요</span>
+                </div>
+                <span class="track-time">3:45</span>
+            </div>
 
-        /* [오른쪽] 플레이리스트 영역 (50%) */
-        .playlist-right { flex: 1; display: flex; flex-direction: column; max-height: 280px; overflow-y: auto; }
-        .playlist-title { font-size: 12px; font-weight: bold; color: #888; margin-bottom: 10px; }
-        .playlist-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border-radius: 6px; cursor: pointer; margin-bottom: 4px; transition: background 0.15s; }
-        .playlist-item:hover { background: #f0f4f8; }
-        .playlist-item.active { background: #e8f3fc; }
-        .playlist-item.active .track-name { color: #51a0d5; font-weight: bold; }
-        .track-info { display: flex; flex-direction: column; gap: 2px; }
-        .track-name { font-size: 13px; color: #333; }
-        .track-singer { font-size: 11px; color: #888; }
-        .track-time { font-size: 11px; color: #aaa; }
+            <div class="playlist-item">
+                <div class="track-info">
+                    <span class="track-name">Moonlight Walk</span>
+                    <span class="track-singer">산군 님</span>
+                </div>
+                <span class="track-time">2:50</span>
+            </div>
 
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.25); z-index: 998; }
-
-        /* 모바일용 라이트 반응형 */
-        @media (max-width: 600px) {
-            .music-body { flex-direction: column; }
-            .player-left { border-right: none; border-bottom: 1px solid #eee; padding-right: 0; padding-bottom: 15px; }
-        }
+            <div class="playlist-item">
+                <div class="track-info">
+                    <span class="track-name">Memory Log</span>
+                    <span class="track-singer">minming</span>
+                </div>
+                <span class="track-time">4:12</span>
+            </div>
+        </div>
+    </div>
+</div>
 
     <!-- 2. 그리고 바로 아래에 이 스크립트 태그 통째로 넣기 -->
     <script>
