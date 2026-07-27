@@ -4,11 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>minming - Finder</title>
-    <!-- 맥북 느낌 아이콘을 위한 FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; user-select: none; }
-        body { background: #dcdde1; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        body { background: #dcdde1; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; position: relative; }
 
         /* 맥북 창 전체 컨테이너 */
         .window {
@@ -24,7 +23,6 @@
             border: 1px solid rgba(0,0,0,0.15);
         }
 
-        /* 1. 상단 타이틀 바 (신호등 버튼 + 툴바) */
         .titlebar {
             height: 52px;
             background: linear-gradient(to bottom, #e8e8e8, #d6d6d6);
@@ -35,189 +33,193 @@
             position: relative;
         }
 
-        /* 신호등 버튼 (빨/노/초) */
         .buttons { display: flex; gap: 8px; position: absolute; left: 15px; }
-        .btn { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+        .btn { width: 12px; height: 12px; border-radius: 50%; display: inline-block; cursor: pointer; }
         .close { background: #ff5f56; border: 1px solid #e0443e; }
         .minimize { background: #ffbd2e; border: 1px solid #dea123; }
         .maximize { background: #27c93f; border: 1px solid #1aab29; }
 
-        /* 창 제목 */
         .window-title { margin: 0 auto; font-size: 13px; font-weight: 600; color: #4d4d4d; display: flex; align-items: center; gap: 6px; }
 
-        /* 툴바 아이콘 영역 */
-        .toolbar-icons { position: absolute; right: 15px; display: flex; gap: 15px; color: #666; font-size: 13px; }
-
-        /* 2. 본문 메인 영역 (사이드바 + 콘텐츠) */
         .main-content { display: flex; flex: 1; height: calc(100% - 52px); }
 
-        /* 왼쪽 사이드바 */
-        .sidebar {
-            width: 180px;
-            background: #f0f0f0;
-            border-right: 1px solid #d1d1d1;
-            padding: 15px 10px;
-            font-size: 12px;
-            color: #555;
-        }
+        .sidebar { width: 180px; background: #f0f0f0; border-right: 1px solid #d1d1d1; padding: 15px 10px; font-size: 12px; color: #555; }
         .sidebar-section { margin-bottom: 20px; }
         .sidebar-title { font-size: 11px; font-weight: bold; color: #888; padding-left: 10px; margin-bottom: 8px; }
-        .sidebar-item {
-            padding: 6px 10px;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            color: #333;
-            text-decoration: none;
-        }
+        .sidebar-item { padding: 6px 10px; border-radius: 5px; display: flex; align-items: center; gap: 8px; cursor: pointer; color: #333; text-decoration: none; }
         .sidebar-item.active { background: #d0d0d0; font-weight: 600; }
         .sidebar-item:hover { background: #e4e4e4; }
         .sidebar-item i { color: #51a0d5; font-size: 13px; }
 
-        /* 오른쪽 파일 그리드 영역 */
-        .content-area {
-            flex: 1;
-            background: #ffffff;
-            padding: 30px;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            grid-auto-rows: max-content;
-            gap: 25px 20px;
-            overflow-y: auto;
-        }
+        .content-area { flex: 1; background: #ffffff; padding: 30px; display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); grid-auto-rows: max-content; gap: 25px 20px; }
 
-        /* 폴더 및 파일 아이콘 버튼 */
-        .file-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-decoration: none;
-            color: #333;
-            padding: 8px;
-            border-radius: 6px;
-            transition: background 0.15s;
-        }
+        .file-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #333; padding: 8px; border-radius: 6px; cursor: pointer; }
         .file-item:hover { background: #e8f3fc; }
-        .file-item:active { background: #cce5ff; }
 
-        /* 파란색 맥북 폴더 아이콘 스타일 */
-        .folder-icon {
-            width: 64px;
-            height: 52px;
-            background: #51a0d5;
-            border-radius: 5px;
-            position: relative;
-            margin-bottom: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-        }
-        /* 맥북 폴더 탭 디테일 */
-        .folder-icon::before {
-            content: '';
-            position: absolute;
-            top: -5px;
-            left: 0;
-            width: 24px;
-            height: 8px;
-            background: #51a0d5;
-            border-top-left-radius: 3px;
-            border-top-right-radius: 3px;
-        }
-        .folder-icon i {
-            position: absolute;
+        .folder-icon { width: 64px; height: 52px; background: #51a0d5; border-radius: 5px; position: relative; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.15); }
+        .folder-icon::before { content: ''; position: absolute; top: -5px; left: 0; width: 24px; height: 8px; background: #51a0d5; border-top-left-radius: 3px; border-top-right-radius: 3px; }
+        .folder-icon i { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -40%); color: rgba(255, 255, 255, 0.85); font-size: 22px; }
+        .file-name { font-size: 12px; text-align: center; }
+
+        /* ------------------------------------------------ */
+        /* 📱 뮤직 플레이어 팝업 창 디자인 (사진 속 느낌 구현) */
+        /* ------------------------------------------------ */
+        .music-modal {
+            display: none; /* 기본 상태는 숨김 */
+            position: fixed;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -40%);
-            color: rgba(255, 255, 255, 0.85);
-            font-size: 22px;
+            transform: translate(-50%, -50%);
+            width: 320px;
+            background: #121212;
+            color: #ffffff;
+            border-radius: 30px;
+            padding: 25px 20px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+            z-index: 999;
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
-        .file-name { font-size: 12px; text-align: center; word-break: break-all; line-height: 1.3; }
+        .music-header { display: flex; justify-content: space-between; align-items: center; font-size: 14px; margin-bottom: 20px; }
+        .music-close-btn { cursor: pointer; color: #aaa; }
+        .music-close-btn:hover { color: #fff; }
 
-        /* 반응형: 스마트폰 화면 처리 */
-        @media (max-width: 600px) {
-            .sidebar { display: none; }
-            .window { height: 85vh; }
-            .content-area { grid-template-columns: repeat(3, 1fr); padding: 20px 10px; }
-        }
+        /* 앨범 커버 원형 */
+        .album-art { width: 180px; height: 180px; border-radius: 50%; margin: 0 auto 20px; overflow: hidden; border: 3px solid #333; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .album-art img { width: 100%; height: 100%; object-fit: cover; }
+
+        .song-title { font-size: 18px; font-weight: bold; text-align: center; margin-bottom: 4px; }
+        .song-artist { font-size: 12px; color: #aaa; text-align: center; margin-bottom: 15px; }
+        
+        .lyrics { font-size: 12px; color: #ddd; text-align: center; line-height: 1.5; margin-bottom: 20px; padding: 0 10px; font-style: italic; }
+
+        /* 재생바 */
+        .progress-container { width: 100%; background: #333; height: 4px; border-radius: 2px; margin-bottom: 20px; position: relative; cursor: pointer; }
+        .progress-bar { width: 35%; background: #ccff00; height: 100%; border-radius: 2px; }
+
+        /* 컨트롤 버튼들 */
+        .controls { display: flex; justify-content: space-between; align-items: center; padding: 0 10px; }
+        .control-btn { font-size: 18px; color: #aaa; cursor: pointer; }
+        .control-btn:hover { color: #fff; }
+        .play-btn { width: 50px; height: 50px; background: #ccff00; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #000; font-size: 20px; cursor: pointer; }
+
+        /* 팝업 떴을 때 뒤쪽 어둡게 */
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 998; }
     </style>
 </head>
 <body>
 
+<!-- 맥북 창 -->
 <div class="window">
-    <!-- 상단 툴바 -->
     <div class="titlebar">
         <div class="buttons">
             <span class="btn close"></span>
             <span class="btn minimize"></span>
             <span class="btn maximize"></span>
         </div>
-        <div class="window-title">
-            <i class="fa-solid fa-house" style="color: #888;"></i> minming
-        </div>
-        <div class="toolbar-icons">
-            <i class="fa-solid fa-magnifying-glass"></i>
-        </div>
+        <div class="window-title"><i class="fa-solid fa-house" style="color: #888;"></i> minming</div>
     </div>
 
-    <!-- 메인 본문 -->
     <div class="main-content">
-        <!-- 왼쪽 메뉴 (사이드바) -->
         <div class="sidebar">
             <div class="sidebar-section">
                 <div class="sidebar-title">Favorites</div>
                 <div class="sidebar-item active"><i class="fa-solid fa-clock"></i> Recents</div>
                 <div class="sidebar-item"><i class="fa-solid fa-desktop"></i> Desktop</div>
-                <div class="sidebar-item"><i class="fa-solid fa-file"></i> Documents</div>
-                <div class="sidebar-item"><i class="fa-solid fa-download"></i> Downloads</div>
             </div>
             <div class="sidebar-section">
                 <div class="sidebar-title">Media</div>
-                <div class="sidebar-item"><i class="fa-solid fa-film"></i> Movies</div>
-                <div class="sidebar-item"><i class="fa-solid fa-music"></i> Music</div>
-                <div class="sidebar-item"><i class="fa-solid fa-image"></i> Pictures</div>
+                <!-- 🎵 사이드바의 Music 클릭시 플레이어 팝업 열기 -->
+                <div class="sidebar-item" onclick="openMusic()"><i class="fa-solid fa-music"></i> Music</div>
             </div>
         </div>
 
-        <!-- 오른쪽 폴더 클릭 구역 -->
         <div class="content-area">
-            
-            <!-- 📁 폴더 1: 누르면 log1.html (첫 대화 백업)로 이동 -->
             <a href="log1.html" class="file-item">
-                <div class="folder-icon">
-                    <i class="fa-solid fa-comments"></i>
-                </div>
+                <div class="folder-icon"><i class="fa-solid fa-comments"></i></div>
                 <span class="file-name">에피소드 1</span>
             </a>
 
-            <!-- 📁 폴더 2: 누르면 log2.html 로 이동 -->
-            <a href="log2.html" class="file-item">
-                <div class="folder-icon">
-                    <i class="fa-solid fa-book-bookmark"></i>
-                </div>
-                <span class="file-name">에피소드 2</span>
-            </a>
-
-            <!-- 📁 폴더 3: 원하는 이름으로 수정 및 추가 가능 -->
-            <a href="log3.html" class="file-item">
-                <div class="folder-icon">
-                    <i class="fa-solid fa-heart"></i>
-                </div>
-                <span class="file-name">특별한 날</span>
-            </a>
-
-            <!-- 📁 폴더 추가 예시 -->
-            <a href="#" class="file-item">
-                <div class="folder-icon">
-                    <i class="fa-solid fa-folder"></i>
-                </div>
-                <span class="file-name">Pictures</span>
-            </a>
-
+            <!-- 🎵 폴더 영역의 Music 클릭시 플레이어 팝업 열기 -->
+            <div class="file-item" onclick="openMusic()">
+                <div class="folder-icon" style="background: #333;"><i class="fa-solid fa-music" style="color: #ccff00;"></i></div>
+                <span class="file-name">Music</span>
+            </div>
         </div>
     </div>
 </div>
+
+<!-- 어두운 배경 덮개 -->
+<div id="overlay" class="overlay" onclick="closeMusic()"></div>
+
+<!-- 📱 팝업으로 나타나는 음악 플레이어 창 -->
+<div id="musicModal" class="music-modal">
+    <div class="music-header">
+        <i class="fa-solid fa-chevron-down music-close-btn" onclick="closeMusic()"></i>
+        <span>Now Playing</span>
+        <i class="fa-regular fa-heart"></i>
+    </div>
+
+    <!-- 1. 앨범 이미지 (원하시는 사진 링크로 바꾸실 수 있어요) -->
+    <div class="album-art">
+        <img id="albumImg" src="https://via.placeholder.com/200" alt="Album Cover">
+    </div>
+
+    <!-- 2. 곡 정보 및 가사 -->
+    <div class="song-title" id="songTitle">Starlit Reverie</div>
+    <div class="song-artist" id="songArtist">캐릭터 이름 x 상대 캐릭터</div>
+    <div class="lyrics" id="songLyrics">"밤바람 속에 나누었던 우리의 소중한 이야기..."</div>
+
+    <!-- 3. 실제 재생될 음악 파일 (mp3 파일 링크나 파일명 넣는 곳) -->
+    <audio id="myAudio" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+
+    <!-- 4. 재생 바 -->
+    <div class="progress-container">
+        <div class="progress-bar"></div>
+    </div>
+
+    <!-- 5. 재생 / 일시정지 컨트롤 버튼 -->
+    <div class="controls">
+        <i class="fa-solid fa-shuffle control-btn"></i>
+        <i class="fa-solid fa-backward-step control-btn"></i>
+        <!-- 재생/일시정지 버튼 -->
+        <div class="play-btn" onclick="togglePlay()"><i id="playIcon" class="fa-solid fa-play"></i></div>
+        <i class="fa-solid fa-forward-step control-btn"></i>
+        <i class="fa-solid fa-repeat control-btn"></i>
+    </div>
+</div>
+
+<script>
+    const musicModal = document.getElementById('musicModal');
+    const overlay = document.getElementById('overlay');
+    const audio = document.getElementById('myAudio');
+    const playIcon = document.getElementById('playIcon');
+
+    // Music 클릭 시 팝업 열기
+    function openMusic() {
+        musicModal.style.display = 'block';
+        overlay.style.display = 'block';
+    }
+
+    // 닫기
+    function closeMusic() {
+        musicModal.style.display = 'none';
+        overlay.style.display = 'none';
+        audio.pause(); // 창 닫으면 음악 끄기
+        playIcon.className = "fa-solid fa-play";
+    }
+
+    // 재생 / 일시정지 기능
+    function togglePlay() {
+        if (audio.paused) {
+            audio.play();
+            playIcon.className = "fa-solid fa-pause"; // 일시정지 아이콘으로 변경
+        } else {
+            audio.pause();
+            playIcon.className = "fa-solid fa-play"; // 재생 아이콘으로 변경
+        }
+    }
+</script>
 
 </body>
 </html>
