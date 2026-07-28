@@ -193,18 +193,36 @@
         font-size: 10px;
     }
 
-    /* 4. 🖼️ 사진 팝업 모바일 최적화 (위아래 잘림 해결) */
-    .photo-modal {
-        width: 92vw;
-        height: 70vh; /* 모바일에서 넉넉한 세로 높이 확보 */
-        aspect-ratio: auto;
-    }
+    /* 🖼️ 기존 photo-modal 부분 찾아서 height 및 img 스타일 수정 */
+.photo-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 650px;
+    max-width: 90vw;
+    /* height: 480px; 👈 고정 높이 삭제/주석 처리 후 아래처럼 max-height 지정 */
+    max-height: 85vh; 
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    z-index: 999;
+    border: 1px solid rgba(0,0,0,0.15);
+    overflow: hidden;
+    flex-direction: column;
+}
 
-    .photo-body img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain; /* 이미지 비율을 깨뜨리지 않고 전체가 쏙 들어가게 설정 */
-    }
+/* 이미지 원본 비율 유지 설정 */
+.photo-body img {
+    max-width: 100%;
+    max-height: 75vh;
+    width: auto;
+    height: auto;
+    object-fit: contain; /* 👈 cover 대신 contain으로 설정해 잘림 방지! */
+    display: block;
+    margin: 0 auto;
+}
 
     /* 맥OS 컨텍스트 메뉴 모바일 위치 및 크기 조절 */
     .mac-context-menu {
@@ -276,9 +294,36 @@
 
         /* 모바일용 라이트 반응형 */
         @media (max-width: 600px) {
-            .music-body { flex-direction: column; }
-            .player-left { border-right: none; border-bottom: 1px solid #eee; padding-right: 0; padding-bottom: 15px; }
-        }
+    /* ... 이전 사이드바 및 메인창 모바일 코드 유지 ... */
+
+    /* 4. 🖼️ 사진 팝업 모바일 최적화 */
+    .photo-modal {
+        width: 90vw !important;
+        max-height: 80vh !important;
+        height: auto !important;
+    }
+
+    .photo-body {
+        padding: 10px;
+        background: #111; /* 잘린 부분 없이 깔끔하게 여백을 채워줍니다 */
+    }
+
+    .photo-body img {
+        max-height: 60vh !important;
+        width: 100% !important;
+        height: auto !important;
+        object-fit: contain !important; /* 비율 깨짐/잘림 완전 방지 */
+    }
+
+    /* 맥OS 컨텍스트 메뉴 위치 조절 */
+    .mac-context-menu {
+        top: 20px;
+        right: 20px;
+        width: 130px;
+        font-size: 10px;
+        padding: 4px;
+    }
+}
         /* 🖼️ 맥OS 스타일 뷰어 팝업 (사진 + 우클릭 메뉴) */
         .photo-modal {
             display: none;
