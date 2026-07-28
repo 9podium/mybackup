@@ -152,45 +152,46 @@
         aspect-ratio: 850 / 520; /* 👈 기존 auto에서 PC와 동일한 비율로 변경 */
     }
 
-    /* 2. 왼쪽 사이드바 나타내기 & 너비 줄이기 */
+    /* 2. 왼쪽 사이드바 미니어처 사이즈로 축소 */
     .sidebar {
-        display: block !important; /* 잘리던 사이드바 다시 표시! */
-        width: 110px; /* 모바일 화면에 맞춰 슬림하게 축소 */
-        padding: 10px 5px;
-        font-size: 11px;
+        display: block !important; 
+        width: 75px;  /* 👈 너비 대폭 축소 */
+        padding: 5px 2px; /* 👈 여백 최소화 */
+        /* overflow-y: auto; 스크롤 코드는 지워주세요! */
+    }
+    
+    .sidebar-section {
+        margin-bottom: 5px; /* 👈 구역 간격 줄임 */
     }
 
     .sidebar-title {
-        font-size: 9px;
-        padding-left: 5px;
-        margin-bottom: 5px;
+        font-size: 7px; /* 👈 제목 글씨 아주 작게 */
+        padding-left: 4px;
+        margin-bottom: 3px;
     }
 
     .sidebar-item {
-        padding: 5px 6px;
-        gap: 5px;
-        font-size: 10px;
+        padding: 3px 4px;
+        gap: 3px;
+        font-size: 8px; /* 👈 메뉴 글씨 아주 작게 */
     }
 
-    /* 3. 오른쪽 폴더 영역 조절 */
-    .content-area {
-        padding: 15px 10px;
-        grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
-        gap: 15px 10px;
+    /* 3. 오른쪽 바탕화면 폴더 크기도 같이 축소 (추가) */
+    /* 본인의 HTML 코드에 맞게 .folder 또는 .icon 등 클래스 이름을 맞춰주세요 */
+    .folder { 
+        width: 50px !important; /* 👈 폴더 전체 크기 축소 */
+        margin: 5px !important;
+    }
+    
+    .folder i, .folder img { 
+        font-size: 25px !important; /* 아이콘 폰트일 경우 */
+        width: 25px !important; /* 이미지일 경우 */
+        height: 25px !important;
     }
 
-    .folder-icon {
-        width: 44px;
-        height: 35px;
-        margin-bottom: 6px;
-    }
-
-    .folder-icon i {
-        font-size: 15px;
-    }
-
-    .file-name {
-        font-size: 10px;
+    .folder span { 
+        font-size: 8px !important; /* 폴더 이름 글씨 크기 축소 */
+        margin-top: 3px !important;
     }
 
     /* 🖼️ 기존 photo-modal 부분 찾아서 height 및 img 스타일 수정 */
