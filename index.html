@@ -332,15 +332,34 @@
         object-fit: contain !important; /* 비율 깨짐/잘림 완전 방지 */
     }
 
-    /* 맥OS 컨텍스트 메뉴 위치 조절 */
+    /* 🖼️ 모바일 맥OS 컨텍스트 메뉴 (우선순위 강제 적용) */
     .mac-context-menu {
-        top: 20px;
-        right: 20px;
-        width: 130px;
-        font-size: 10px;
-        padding: 4px;
+        top: 10px !important;
+        right: 10px !important;
+        width: 100px !important;        /* 모바일에 맞춰 더 아기자기하게 축소 */
+        font-size: 8px !important;       /* 글자 크기 줄임 */
+        padding: 3px !important;
+        border-radius: 5px !important;
     }
-}
+
+    .mac-context-menu .menu-item {
+        padding: 2px 4px !important;
+        font-size: 8px !important;
+    }
+
+    .mac-context-menu .menu-divider {
+        margin: 2px 0 !important;
+    }
+
+    .mac-context-menu .color-tags {
+        gap: 3px !important;
+        padding: 2px 4px !important;
+    }
+
+    .mac-context-menu .tag-dot {
+        width: 6px !important;
+        height: 6px !important;
+    }
         /* 🖼️ 맥OS 스타일 뷰어 팝업 (사진 + 우클릭 메뉴) */
         .photo-modal {
             display: none;
@@ -512,7 +531,7 @@
     <div class="photo-body">
         <!-- 💡 여기에 표시하고 싶은 사진 파일명이나 이미지 주소를 넣으시면 됩니다! -->
         <img src="goodboy.zip.jpeg" alt="Pictures Image">
-</div
+    </div>
         <!-- 사진 속 맥OS 우클릭 메뉴 디자인 -->
         <div class="mac-context-menu">
             <div class="menu-item">Open</div>
