@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=890">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>minming - Finder</title>
     <!-- 맥북 느낌 아이콘을 위한 FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -323,6 +323,20 @@
         .menu-divider { height: 1px; background: #e5e5e5; margin: 4px 0; }
         .color-tags { display: flex; gap: 6px; padding: 4px 8px; }
         .tag-dot { width: 10px; height: 10px; border-radius: 50%; }
+@media (max-width: 890px) {
+            body {
+                overflow-x: hidden;
+                display: flex;
+                justify-content: center;
+                align-items: flex-start;
+                padding-top: 20px;
+            }
+
+            .window {
+                transform: scale(calc(100vw / 890));
+                transform-origin: top center;
+            }
+        }
     </style>
 </head>
 <body>
