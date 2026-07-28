@@ -461,35 +461,8 @@
     </div>
 </div>
 
-    <!-- 2. 그리고 바로 아래에 이 스크립트 태그 통째로 넣기 -->
+   <!-- 자바스크립트 영역 -->
     <script>
-        const musicModal = document.getElementById('musicModal');
-        const overlay = document.getElementById('overlay');
-        const audio = document.getElementById('myAudio');
-        const playIcon = document.getElementById('playIcon');
-
-        function openMusic() {
-            musicModal.style.display = 'block';
-            overlay.style.display = 'block';
-        }
-
-        function closeMusic() {
-            musicModal.style.display = 'none';
-            overlay.style.display = 'none';
-            audio.pause();
-            playIcon.className = "fa-solid fa-play";
-        }
-
-        function togglePlay() {
-            if (audio.paused) {
-                audio.play();
-                playIcon.className = "fa-solid fa-pause";
-            } else {
-                audio.pause();
-                playIcon.className = "fa-solid fa-play";
-            }
-        }
-        <script>
         const musicModal = document.getElementById('musicModal');
         const overlay = document.getElementById('overlay');
         const audio = document.getElementById('myAudio');
@@ -498,6 +471,7 @@
         /* 🖼️ 사진 모달 변수 추가 */
         const photoModal = document.getElementById('photoModal');
 
+        /* 🎵 음악 팝업 함수 */
         function openMusic() {
             musicModal.style.display = 'block';
             overlay.style.display = 'block';
@@ -520,7 +494,7 @@
             }
         }
 
-        /* 🖼️ 사진 팝업 열기/닫기 함수 추가 */
+        /* 🖼️ 사진 팝업 열기/닫기 함수 */
         function openPhoto() {
             photoModal.style.display = 'flex';
             overlay.style.display = 'block';
