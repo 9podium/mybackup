@@ -11,21 +11,19 @@
         body { background: #dcdde1; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
 
         /* 맥북 창 전체 컨테이너 */
-.window {
-    width: 100%;
-    max-width: 850px;
-    /* 고정 height 대신 비율 유지 속성 사용 (가로:세로 = 16:10 또는 850:520) */
-    aspect-ratio: 850 / 520;
-    height: auto; /* 고정 높이 해제 */
-    
-    background: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    border: 1px solid rgba(0,0,0,0.15);
-}
+        .window {
+            width: 100%;
+            max-width: 850px;
+            aspect-ratio: 850 / 520;
+            height: auto;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.15);
+        }
 
         /* 1. 상단 타이틀 바 (신호등 버튼 + 툴바) */
         .titlebar {
@@ -115,7 +113,6 @@
             margin-bottom: 10px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.15);
         }
-        /* 맥북 폴더 탭 디테일 */
         .folder-icon::before {
             content: '';
             position: absolute;
@@ -138,15 +135,17 @@
 
         .file-name { font-size: 12px; text-align: center; word-break: break-all; line-height: 1.3; }
 
-      
-    /* 📱 맥OS 스타일 뮤직 팝업 (반반 레이아웃) */
+        /* 오버레이 (팝업 뒤 어두운 배경) */
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.25); z-index: 998; }
+
+        /* 🎵 뮤직 팝업 */
         .music-modal {
             display: none;
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 580px; /* 반반 레이아웃을 위해 폭을 넓혔습니다 */
+            width: 580px;
             max-width: 90vw;
             background: #ffffff;
             color: #333333;
@@ -156,31 +155,22 @@
             z-index: 999;
             border: 1px solid rgba(0,0,0,0.15);
         }
-
         .music-header { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600; margin-bottom: 15px; color: #555; padding-bottom: 10px; border-bottom: 1px solid #eee; }
         .music-close-btn { cursor: pointer; color: #888; font-size: 16px; }
         .music-close-btn:hover { color: #333; }
-
-        /* 반반 구조 (왼쪽 재생기 / 오른쪽 플레이리스트) */
         .music-body { display: flex; gap: 20px; }
-
-        /* [왼쪽] 재생기 영역 (50%) */
         .player-left { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid #eee; padding-right: 20px; }
         .album-art { width: 140px; height: 140px; border-radius: 8px; margin-bottom: 12px; overflow: hidden; border: 1px solid #e0e0e0; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
         .album-art img { width: 100%; height: 100%; object-fit: cover; }
         .song-title { font-size: 15px; font-weight: bold; text-align: center; margin-bottom: 4px; color: #222; }
         .song-artist { font-size: 12px; color: #777; text-align: center; margin-bottom: 10px; }
         .lyrics { font-size: 11px; color: #666; text-align: center; line-height: 1.4; margin-bottom: 12px; font-style: italic; }
-
         .progress-container { width: 100%; background: #e5e5e5; height: 4px; border-radius: 2px; margin-bottom: 12px; cursor: pointer; }
         .progress-bar { width: 35%; background: #51a0d5; height: 100%; border-radius: 2px; }
-
         .controls { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 10px; }
         .control-btn { font-size: 15px; color: #777; cursor: pointer; }
         .control-btn:hover { color: #333; }
         .play-btn { width: 38px; height: 38px; background: #51a0d5; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #fff; font-size: 16px; cursor: pointer; }
-
-        /* [오른쪽] 플레이리스트 영역 (50%) */
         .playlist-right { flex: 1; display: flex; flex-direction: column; max-height: 280px; overflow-y: auto; }
         .playlist-title { font-size: 12px; font-weight: bold; color: #888; margin-bottom: 10px; }
         .playlist-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border-radius: 6px; cursor: pointer; margin-bottom: 4px; transition: background 0.15s; }
@@ -192,60 +182,7 @@
         .track-singer { font-size: 11px; color: #888; }
         .track-time { font-size: 11px; color: #aaa; }
 
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.25); z-index: 998; }
-
-        /* 모바일용 라이트 반응형 */
-        @media (max-width: 600px) {
-    /* ... 이전 사이드바 및 메인창 모바일 코드 유지 ... */
-
-    /* 4. 🖼️ 사진 팝업 모바일 최적화 */
-    .photo-modal {
-        width: 90vw !important;
-        max-height: 80vh !important;
-        height: auto !important;
-    }
-
-    .photo-body {
-        padding: 10px;
-        background: #111; /* 잘린 부분 없이 깔끔하게 여백을 채워줍니다 */
-    }
-
-    .photo-body img {
-        max-height: 60vh !important;
-        width: 100% !important;
-        height: auto !important;
-        object-fit: contain !important; /* 비율 깨짐/잘림 완전 방지 */
-    }
-
-    /* 🖼️ 모바일 맥OS 컨텍스트 메뉴 (우선순위 강제 적용) */
-    .mac-context-menu {
-        top: 10px !important;
-        right: 10px !important;
-        width: 100px !important;        /* 모바일에 맞춰 더 아기자기하게 축소 */
-        font-size: 8px !important;       /* 글자 크기 줄임 */
-        padding: 3px !important;
-        border-radius: 5px !important;
-    }
-
-    .mac-context-menu .menu-item {
-        padding: 2px 4px !important;
-        font-size: 8px !important;
-    }
-
-    .mac-context-menu .menu-divider {
-        margin: 2px 0 !important;
-    }
-
-    .mac-context-menu .color-tags {
-        gap: 3px !important;
-        padding: 2px 4px !important;
-    }
-
-    .mac-context-menu .tag-dot {
-        width: 6px !important;
-        height: 6px !important;
-    }
-        /* 🖼️ 맥OS 스타일 뷰어 팝업 (사진 + 우클릭 메뉴) */
+        /* 🖼️ 맥OS 스타일 사진 뷰어 팝업 (기본 숨김: display: none) */
         .photo-modal {
             display: none;
             position: fixed;
@@ -263,7 +200,6 @@
             overflow: hidden;
             flex-direction: column;
         }
-
         .photo-header {
             height: 40px;
             background: #f6f6f6;
@@ -273,11 +209,8 @@
             justify-content: space-between;
             padding: 0 15px;
         }
-
         .photo-close-btn { cursor: pointer; color: #888; font-size: 15px; }
         .photo-close-btn:hover { color: #333; }
-
-        /* 사진 영역 */
         .photo-body {
             position: relative;
             flex: 1;
@@ -287,14 +220,11 @@
             align-items: center;
             overflow: hidden;
         }
-
         .photo-body img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-
-        /* 맥OS 스타일 컨텍스트(우클릭) 메뉴 */
         .mac-context-menu {
             position: absolute;
             top: 30px;
@@ -309,7 +239,6 @@
             font-size: 12px;
             color: #333;
         }
-
         .menu-item {
             padding: 4px 8px;
             border-radius: 4px;
@@ -318,12 +247,54 @@
             align-items: center;
             cursor: pointer;
         }
-
         .menu-item:hover { background: #51a0d5; color: white; }
         .menu-divider { height: 1px; background: #e5e5e5; margin: 4px 0; }
         .color-tags { display: flex; gap: 6px; padding: 4px 8px; }
         .tag-dot { width: 10px; height: 10px; border-radius: 50%; }
-@media (max-width: 890px) {
+
+        /* 📱 모바일 최적화 반응형 */
+        @media (max-width: 600px) {
+            .photo-modal {
+                width: 90vw !important;
+                max-height: 80vh !important;
+                height: auto !important;
+            }
+            .photo-body {
+                padding: 10px;
+                background: #111;
+            }
+            .photo-body img {
+                max-height: 60vh !important;
+                width: 100% !important;
+                height: auto !important;
+                object-fit: contain !important;
+            }
+            .mac-context-menu {
+                top: 10px !important;
+                right: 10px !important;
+                width: 100px !important;
+                font-size: 8px !important;
+                padding: 3px !important;
+                border-radius: 5px !important;
+            }
+            .mac-context-menu .menu-item {
+                padding: 2px 4px !important;
+                font-size: 8px !important;
+            }
+            .mac-context-menu .menu-divider {
+                margin: 2px 0 !important;
+            }
+            .mac-context-menu .color-tags {
+                gap: 3px !important;
+                padding: 2px 4px !important;
+            }
+            .mac-context-menu .tag-dot {
+                width: 6px !important;
+                height: 6px !important;
+            }
+        }
+
+        @media (max-width: 890px) {
             body {
                 overflow-x: hidden;
                 display: flex;
@@ -331,7 +302,6 @@
                 align-items: flex-start;
                 padding-top: 20px;
             }
-
             .window {
                 transform: scale(calc(100vw / 890));
                 transform-origin: top center;
@@ -350,7 +320,7 @@
             <span class="btn maximize"></span>
         </div>
         <div class="window-title">
-            <i class="fa-solid fa-house" style="color: #888;"></i> ( ˘ ³˘)♥ my favourite helmet boy <33
+            <i class="fa-solid fa-house" style="color: #888;"></i> ( ˘ ³˘)♥ my favourite helmet boy &lt;33
         </div>
         <div class="toolbar-icons">
             <i class="fa-solid fa-magnifying-glass"></i>
@@ -372,14 +342,14 @@
                 <div class="sidebar-title">Media</div>
                 <div class="sidebar-item"><i class="fa-solid fa-film"></i> Movies</div>
                 <div class="sidebar-item" onclick="openMusic()"><i class="fa-solid fa-music"></i> Music</div>
-                <div class="sidebar-item"><i class="fa-solid fa-image"></i> Pictures</div>
+                <div class="sidebar-item" onclick="openPhoto()"><i class="fa-solid fa-image"></i> Pictures</div>
             </div>
         </div>
 
         <!-- 오른쪽 폴더 클릭 구역 -->
         <div class="content-area">
             
-            <!-- 📁 폴더 1: 누르면 log1.html (첫 대화 백업)로 이동 -->
+            <!-- 📁 폴더 1: 누르면 log1.html 로 이동 -->
             <a href="log1.html" class="file-item">
                 <div class="folder-icon">
                     <i class="fa-solid fa-comments"></i>
@@ -395,7 +365,7 @@
                 <span class="file-name">에피소드 2</span>
             </a>
 
-            <!-- 📁 폴더 3: 원하는 이름으로 수정 및 추가 가능 -->
+            <!-- 📁 폴더 3 -->
             <a href="log3.html" class="file-item">
                 <div class="folder-icon">
                     <i class="fa-solid fa-heart"></i>
@@ -406,7 +376,7 @@
             <!-- 📁 Pictures 폴더: 누르면 사진 팝업 열기 -->
             <div class="file-item" onclick="openPhoto()" style="cursor: pointer;">
                 <div class="folder-icon">
-                    <i class="fa-solid fa-image"></i>
+                    <i class="fa-solid fa-file-zipper"></i>
                 </div>
                 <span class="file-name">good boy.zip</span>
             </div>
@@ -414,9 +384,10 @@
         </div>
     </div>
 </div>
+
 <div id="overlay" class="overlay" onclick="closeMusic(); closePhoto();"></div>
 
-    <!-- 🖼️ Pictures 클릭 시 뜨는 사진 뷰어 팝업 -->
+<!-- 🖼️ Pictures 클릭 시 뜨는 사진 뷰어 팝업 -->
 <div id="photoModal" class="photo-modal">
     <div class="photo-header">
         <div class="buttons">
@@ -428,9 +399,7 @@
     </div>
 
     <div class="photo-body">
-        <!-- 💡 여기에 표시하고 싶은 사진 파일명이나 이미지 주소를 넣으시면 됩니다! -->
         <img src="goodboy.zip.jpeg" alt="Pictures Image">
-    </div>
         <!-- 사진 속 맥OS 우클릭 메뉴 디자인 -->
         <div class="mac-context-menu">
             <div class="menu-item">Open</div>
@@ -454,16 +423,15 @@
         </div>
     </div>
 </div>
-    
-    <div id="musicModal" class="music-modal">
+
+<!-- 🎵 음악 팝업 -->
+<div id="musicModal" class="music-modal">
     <div class="music-header">
         <span>Now Playing</span>
         <i class="fa-solid fa-xmark music-close-btn" onclick="closeMusic()"></i>
     </div>
 
-    <!-- 반반 레이아웃 본문 -->
     <div class="music-body">
-        <!-- 👈 왼쪽: 플레이어 & 가사 -->
         <div class="player-left">
             <div class="album-art">
                 <img id="albumImg" src="https://via.placeholder.com/200" alt="Album Cover">
@@ -487,10 +455,8 @@
             </div>
         </div>
 
-        <!-- 👉 오른쪽: 플레이리스트 목록 -->
         <div class="playlist-right">
             <div class="playlist-title">PLAYLIST</div>
-            
             <div class="playlist-item active">
                 <div class="track-info">
                     <span class="track-name">Starlit Reverie</span>
@@ -498,7 +464,6 @@
                 </div>
                 <span class="track-time">3:45</span>
             </div>
-
             <div class="playlist-item">
                 <div class="track-info">
                     <span class="track-name">Moonlight Walk</span>
@@ -506,7 +471,6 @@
                 </div>
                 <span class="track-time">2:50</span>
             </div>
-
             <div class="playlist-item">
                 <div class="track-info">
                     <span class="track-name">Memory Log</span>
@@ -518,50 +482,48 @@
     </div>
 </div>
 
-   <!-- 자바스크립트 영역 -->
-    <script>
-        const musicModal = document.getElementById('musicModal');
-        const overlay = document.getElementById('overlay');
-        const audio = document.getElementById('myAudio');
-        const playIcon = document.getElementById('playIcon');
+<!-- 자바스크립트 영역 -->
+<script>
+    const musicModal = document.getElementById('musicModal');
+    const photoModal = document.getElementById('photoModal');
+    const overlay = document.getElementById('overlay');
+    const audio = document.getElementById('myAudio');
+    const playIcon = document.getElementById('playIcon');
 
-        /* 🖼️ 사진 모달 변수 추가 */
-        const photoModal = document.getElementById('photoModal');
+    /* 🎵 음악 팝업 함수 */
+    function openMusic() {
+        musicModal.style.display = 'block';
+        overlay.style.display = 'block';
+    }
 
-        /* 🎵 음악 팝업 함수 */
-        function openMusic() {
-            musicModal.style.display = 'block';
-            overlay.style.display = 'block';
-        }
+    function closeMusic() {
+        musicModal.style.display = 'none';
+        overlay.style.display = 'none';
+        audio.pause();
+        playIcon.className = "fa-solid fa-play";
+    }
 
-        function closeMusic() {
-            musicModal.style.display = 'none';
-            overlay.style.display = 'none';
+    function togglePlay() {
+        if (audio.paused) {
+            audio.play();
+            playIcon.className = "fa-solid fa-pause";
+        } else {
             audio.pause();
             playIcon.className = "fa-solid fa-play";
         }
+    }
 
-        function togglePlay() {
-            if (audio.paused) {
-                audio.play();
-                playIcon.className = "fa-solid fa-pause";
-            } else {
-                audio.pause();
-                playIcon.className = "fa-solid fa-play";
-            }
-        }
+    /* 🖼️ 사진 팝업 열기/닫기 함수 */
+    function openPhoto() {
+        photoModal.style.display = 'flex';
+        overlay.style.display = 'block';
+    }
 
-        /* 🖼️ 사진 팝업 열기/닫기 함수 */
-        function openPhoto() {
-            photoModal.style.display = 'flex';
-            overlay.style.display = 'block';
-        }
+    function closePhoto() {
+        photoModal.style.display = 'none';
+        overlay.style.display = 'none';
+    }
+</script>
 
-        function closePhoto() {
-            photoModal.style.display = 'none';
-            overlay.style.display = 'none';
-        }
-    </script>
-    
 </body>
 </html>
