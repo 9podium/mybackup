@@ -8,14 +8,22 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; user-select: none; }
-        body { background: #dcdde1; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        
+        body { 
+            background: #dcdde1; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            padding: 15px; 
+        }
 
         /* 맥북 창 전체 컨테이너 */
         .window {
             width: 100%;
             max-width: 850px;
-            aspect-ratio: 850 / 520;
-            height: auto;
+            height: 520px;
+            max-height: 85vh; /* 모바일에서도 세로 비율 유지를 위해 최대 높이 제한 */
             background: #ffffff;
             border-radius: 10px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.25);
@@ -27,13 +35,14 @@
 
         /* 1. 상단 타이틀 바 (신호등 버튼 + 툴바) */
         .titlebar {
-            height: 52px;
+            height: 45px;
             background: linear-gradient(to bottom, #e8e8e8, #d6d6d6);
             border-bottom: 1px solid #b8b8b8;
             display: flex;
             align-items: center;
             padding: 0 15px;
             position: relative;
+            flex-shrink: 0;
         }
 
         /* 신호등 버튼 (빨/노/초) */
@@ -44,22 +53,36 @@
         .maximize { background: #27c93f; border: 1px solid #1aab29; }
 
         /* 창 제목 */
-        .window-title { margin: 0 auto; font-size: 13px; font-weight: 600; color: #4d4d4d; display: flex; align-items: center; gap: 6px; }
+        .window-title { 
+            margin: 0 auto; 
+            font-size: 12px; 
+            font-weight: 600; 
+            color: #4d4d4d; 
+            display: flex; 
+            align-items: center; 
+            gap: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 60%;
+        }
 
         /* 툴바 아이콘 영역 */
         .toolbar-icons { position: absolute; right: 15px; display: flex; gap: 15px; color: #666; font-size: 13px; }
 
         /* 2. 본문 메인 영역 (사이드바 + 콘텐츠) */
-        .main-content { display: flex; flex: 1; height: calc(100% - 52px); }
+        .main-content { display: flex; flex: 1; overflow: hidden; }
 
         /* 왼쪽 사이드바 */
         .sidebar {
-            width: 180px;
+            width: 160px;
             background: #f0f0f0;
             border-right: 1px solid #d1d1d1;
             padding: 15px 10px;
             font-size: 12px;
             color: #555;
+            flex-shrink: 0;
+            overflow-y: auto;
         }
         .sidebar-section { margin-bottom: 20px; }
         .sidebar-title { font-size: 11px; font-weight: bold; color: #888; padding-left: 10px; margin-bottom: 8px; }
@@ -72,6 +95,7 @@
             cursor: pointer;
             color: #333;
             text-decoration: none;
+            font-size: 12px;
         }
         .sidebar-item.active { background: #d0d0d0; font-weight: 600; }
         .sidebar-item:hover { background: #e4e4e4; }
@@ -81,11 +105,11 @@
         .content-area {
             flex: 1;
             background: #ffffff;
-            padding: 30px;
+            padding: 20px;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
             grid-auto-rows: max-content;
-            gap: 25px 20px;
+            gap: 20px 15px;
             overflow-y: auto;
         }
 
@@ -105,21 +129,21 @@
 
         /* 파란색 맥북 폴더 아이콘 스타일 */
         .folder-icon {
-            width: 64px;
-            height: 52px;
+            width: 56px;
+            height: 46px;
             background: #51a0d5;
             border-radius: 5px;
             position: relative;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.15);
         }
         .folder-icon::before {
             content: '';
             position: absolute;
-            top: -5px;
+            top: -4px;
             left: 0;
-            width: 24px;
-            height: 8px;
+            width: 20px;
+            height: 7px;
             background: #51a0d5;
             border-top-left-radius: 3px;
             border-top-right-radius: 3px;
@@ -130,13 +154,13 @@
             left: 50%;
             transform: translate(-50%, -40%);
             color: rgba(255, 255, 255, 0.85);
-            font-size: 22px;
+            font-size: 20px;
         }
 
-        .file-name { font-size: 12px; text-align: center; word-break: break-all; line-height: 1.3; }
+        .file-name { font-size: 11px; text-align: center; word-break: break-all; line-height: 1.3; }
 
         /* 오버레이 (팝업 뒤 어두운 배경) */
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.25); z-index: 998; }
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); z-index: 998; }
 
         /* 🎵 뮤직 팝업 */
         .music-modal {
@@ -145,7 +169,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 580px;
+            width: 550px;
             max-width: 90vw;
             background: #ffffff;
             color: #333333;
@@ -160,38 +184,39 @@
         .music-close-btn:hover { color: #333; }
         .music-body { display: flex; gap: 20px; }
         .player-left { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid #eee; padding-right: 20px; }
-        .album-art { width: 140px; height: 140px; border-radius: 8px; margin-bottom: 12px; overflow: hidden; border: 1px solid #e0e0e0; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+        .album-art { width: 120px; height: 120px; border-radius: 8px; margin-bottom: 12px; overflow: hidden; border: 1px solid #e0e0e0; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
         .album-art img { width: 100%; height: 100%; object-fit: cover; }
-        .song-title { font-size: 15px; font-weight: bold; text-align: center; margin-bottom: 4px; color: #222; }
-        .song-artist { font-size: 12px; color: #777; text-align: center; margin-bottom: 10px; }
+        .song-title { font-size: 14px; font-weight: bold; text-align: center; margin-bottom: 4px; color: #222; }
+        .song-artist { font-size: 11px; color: #777; text-align: center; margin-bottom: 10px; }
         .lyrics { font-size: 11px; color: #666; text-align: center; line-height: 1.4; margin-bottom: 12px; font-style: italic; }
         .progress-container { width: 100%; background: #e5e5e5; height: 4px; border-radius: 2px; margin-bottom: 12px; cursor: pointer; }
         .progress-bar { width: 35%; background: #51a0d5; height: 100%; border-radius: 2px; }
         .controls { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 10px; }
-        .control-btn { font-size: 15px; color: #777; cursor: pointer; }
+        .control-btn { font-size: 14px; color: #777; cursor: pointer; }
         .control-btn:hover { color: #333; }
-        .play-btn { width: 38px; height: 38px; background: #51a0d5; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #fff; font-size: 16px; cursor: pointer; }
-        .playlist-right { flex: 1; display: flex; flex-direction: column; max-height: 280px; overflow-y: auto; }
-        .playlist-title { font-size: 12px; font-weight: bold; color: #888; margin-bottom: 10px; }
-        .playlist-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border-radius: 6px; cursor: pointer; margin-bottom: 4px; transition: background 0.15s; }
+        .play-btn { width: 34px; height: 34px; background: #51a0d5; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #fff; font-size: 14px; cursor: pointer; }
+        .playlist-right { flex: 1; display: flex; flex-direction: column; max-height: 250px; overflow-y: auto; }
+        .playlist-title { font-size: 11px; font-weight: bold; color: #888; margin-bottom: 10px; }
+        .playlist-item { display: flex; align-items: center; justify-content: space-between; padding: 6px 8px; border-radius: 6px; cursor: pointer; margin-bottom: 4px; transition: background 0.15s; }
         .playlist-item:hover { background: #f0f4f8; }
         .playlist-item.active { background: #e8f3fc; }
         .playlist-item.active .track-name { color: #51a0d5; font-weight: bold; }
         .track-info { display: flex; flex-direction: column; gap: 2px; }
-        .track-name { font-size: 13px; color: #333; }
-        .track-singer { font-size: 11px; color: #888; }
-        .track-time { font-size: 11px; color: #aaa; }
+        .track-name { font-size: 12px; color: #333; }
+        .track-singer { font-size: 10px; color: #888; }
+        .track-time { font-size: 10px; color: #aaa; }
 
-        /* 🖼️ 맥OS 스타일 사진 뷰어 팝업 (기본 숨김: display: none) */
+        /* 🖼️ 맥OS 스타일 사진 뷰어 팝업 */
         .photo-modal {
             display: none;
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 650px;
+            width: 600px;
             max-width: 90vw;
-            height: 480px;
+            height: 420px;
+            max-height: 80vh;
             background: #ffffff;
             border-radius: 12px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.3);
@@ -201,20 +226,21 @@
             flex-direction: column;
         }
         .photo-header {
-            height: 40px;
+            height: 38px;
             background: #f6f6f6;
             border-bottom: 1px solid #e0e0e0;
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 0 15px;
+            flex-shrink: 0;
         }
         .photo-close-btn { cursor: pointer; color: #888; font-size: 15px; }
         .photo-close-btn:hover { color: #333; }
         .photo-body {
             position: relative;
             flex: 1;
-            background: #222;
+            background: #1e1e1e;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -223,24 +249,24 @@
         .photo-body img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
         }
         .mac-context-menu {
             position: absolute;
-            top: 30px;
-            right: 30px;
-            width: 170px;
+            top: 20px;
+            right: 20px;
+            width: 140px;
             background: rgba(255, 255, 255, 0.92);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(0,0,0,0.15);
             border-radius: 8px;
             padding: 5px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.25);
-            font-size: 12px;
+            font-size: 11px;
             color: #333;
         }
         .menu-item {
-            padding: 4px 8px;
+            padding: 4px 6px;
             border-radius: 4px;
             display: flex;
             justify-content: space-between;
@@ -248,64 +274,31 @@
             cursor: pointer;
         }
         .menu-item:hover { background: #51a0d5; color: white; }
-        .menu-divider { height: 1px; background: #e5e5e5; margin: 4px 0; }
-        .color-tags { display: flex; gap: 6px; padding: 4px 8px; }
-        .tag-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .menu-divider { height: 1px; background: #e5e5e5; margin: 3px 0; }
+        .color-tags { display: flex; gap: 5px; padding: 3px 6px; }
+        .tag-dot { width: 8px; height: 8px; border-radius: 50%; }
 
-        /* 📱 모바일 최적화 반응형 */
-        @media (max-width: 600px) {
-            .photo-modal {
-                width: 90vw !important;
-                max-height: 80vh !important;
-                height: auto !important;
+        /* 📱 모바일 전용 미세조정 (화면 폭 500px 이하일 때) */
+        @media (max-width: 500px) {
+            .sidebar {
+                width: 120px; /* 사이드바 폭 축소 */
+                padding: 10px 5px;
             }
-            .photo-body {
-                padding: 10px;
-                background: #111;
+            .sidebar-title { font-size: 10px; }
+            .sidebar-item { font-size: 11px; padding: 5px 6px; }
+            .content-area {
+                padding: 12px;
+                grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+                gap: 15px 10px;
             }
-            .photo-body img {
-                max-height: 60vh !important;
-                width: 100% !important;
-                height: auto !important;
-                object-fit: contain !important;
-            }
-            .mac-context-menu {
-                top: 10px !important;
-                right: 10px !important;
-                width: 100px !important;
-                font-size: 8px !important;
-                padding: 3px !important;
-                border-radius: 5px !important;
-            }
-            .mac-context-menu .menu-item {
-                padding: 2px 4px !important;
-                font-size: 8px !important;
-            }
-            .mac-context-menu .menu-divider {
-                margin: 2px 0 !important;
-            }
-            .mac-context-menu .color-tags {
-                gap: 3px !important;
-                padding: 2px 4px !important;
-            }
-            .mac-context-menu .tag-dot {
-                width: 6px !important;
-                height: 6px !important;
-            }
-        }
-
-        @media (max-width: 890px) {
-            body {
-                overflow-x: hidden;
-                display: flex;
-                justify-content: center;
-                align-items: flex-start;
-                padding-top: 20px;
-            }
-            .window {
-                transform: scale(calc(100vw / 890));
-                transform-origin: top center;
-            }
+            .folder-icon { width: 48px; height: 38px; }
+            .folder-icon i { font-size: 16px; }
+            .file-name { font-size: 10px; }
+            
+            /* 모바일에서 음악 플레이어 세로 배치 */
+            .music-body { flex-direction: column; gap: 10px; }
+            .player-left { border-right: none; border-bottom: 1px solid #eee; padding-right: 0; padding-bottom: 12px; }
+            .playlist-right { max-height: 120px; }
         }
     </style>
 </head>
@@ -346,10 +339,10 @@
             </div>
         </div>
 
-        <!-- 오른쪽 폴더 클릭 구역 -->
+        <!-- 오른쪽 파일 그리드 구역 -->
         <div class="content-area">
             
-            <!-- 📁 폴더 1: 누르면 log1.html 로 이동 -->
+            <!-- 📁 폴더 1 -->
             <a href="log1.html" class="file-item">
                 <div class="folder-icon">
                     <i class="fa-solid fa-comments"></i>
@@ -357,7 +350,7 @@
                 <span class="file-name">에피소드 1</span>
             </a>
 
-            <!-- 📁 폴더 2: 누르면 log2.html 로 이동 -->
+            <!-- 📁 폴더 2 -->
             <a href="log2.html" class="file-item">
                 <div class="folder-icon">
                     <i class="fa-solid fa-book-bookmark"></i>
@@ -373,7 +366,7 @@
                 <span class="file-name">특별한 날</span>
             </a>
 
-            <!-- 📁 Pictures 폴더: 누르면 사진 팝업 열기 -->
+            <!-- 📁 goodboy.zip -->
             <div class="file-item" onclick="openPhoto()" style="cursor: pointer;">
                 <div class="folder-icon">
                     <i class="fa-solid fa-file-zipper"></i>
@@ -387,7 +380,7 @@
 
 <div id="overlay" class="overlay" onclick="closeMusic(); closePhoto();"></div>
 
-<!-- 🖼️ Pictures 클릭 시 뜨는 사진 뷰어 팝업 -->
+<!-- 🖼️ 사진 뷰어 팝업 -->
 <div id="photoModal" class="photo-modal">
     <div class="photo-header">
         <div class="buttons">
@@ -400,7 +393,6 @@
 
     <div class="photo-body">
         <img src="goodboy.zip.jpeg" alt="Pictures Image">
-        <!-- 사진 속 맥OS 우클릭 메뉴 디자인 -->
         <div class="mac-context-menu">
             <div class="menu-item">Open</div>
             <div class="menu-item">View Details <span>›</span></div>
